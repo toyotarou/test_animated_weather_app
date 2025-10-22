@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
 
-    _rotateAnimation = Tween<double>(begin: 0.0, end: 2 * Math.pi).animate(_rotateController);
+    _rotateAnimation = Tween<double>(begin: 0.0, end: 2 * math.pi).animate(_rotateController);
 
     _pulseAnimation = Tween<double>(
       begin: 1.0,
@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       end: 150.0,
     ).animate(CurvedAnimation(parent: _cloudController, curve: Curves.easeInOut));
 
-    _waveAnimation = Tween<double>(begin: 0.0, end: 2 * Math.pi).animate(_waveController);
+    _waveAnimation = Tween<double>(begin: 0.0, end: 2 * math.pi).animate(_waveController);
 
     _breathAnimation = Tween<double>(
       begin: 0.95,
@@ -350,6 +350,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         );
                                       },
                                     ),
+
+                                    AnimatedBuilder(
+                                      animation: _rotateAnimation,
+                                      builder: (context, child) {
+                                        return Transform.rotate(
+                                          angle: _rotateAnimation.value,
+
+                                          child: CustomPaint(painter: SunRaysPainter(), size: Size(80, 80)),
+                                        );
+                                      },
+                                    ),
+
+                                    AnimatedBuilder(
+                                      animation: _pulseAnimation,
+                                      builder: (context, child) {
+                                        return Transform.scale(
+                                          scale: _pulseAnimation.value,
+                                          child: Container(
+                                            width: 65,
+                                            height: 65,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+
+                                              gradient: RadialGradient(colors: [Color(0xffffe082), Color(0xFFFF8740)]),
+
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.yellowAccent.withValues(alpha: 0.4),
+
+                                                  blurRadius: 20,
+                                                  spreadRadius: 5,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ],
                                 ),
                               );
@@ -367,4 +405,188 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       },
     );
   }
+}
+
+class SunRaysPainter extends CustomPainter {
+  ///
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.yellowAccent.withValues(alpha: 0.6)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+
+    final center = Offset(size.width / 2, size.height / 2);
+
+    final radius = size.width / 2;
+
+    for (int i = 0; i < 12; i++) {
+      final angle = (i * 30) * math.pi / 180;
+
+      final start = Offset(center.dx + math.cos(angle) * (radius - 15), center.dy + math.sin(angle) * (radius - 15));
+
+      final end = Offset(center.dx + math.cos(angle) * radius, center.dy + math.sin(angle) * radius);
+
+      canvas.drawLine(start, end, paint);
+    }
+  }
+
+  ///
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class CloudPainter extends CustomPainter {
+  ///
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.95)
+      ..style = PaintingStyle.fill;
+
+    final shadowPaint = Paint()
+      ..color = Colors.grey.withValues(alpha: 0.2)
+      ..style = PaintingStyle.fill;
+
+    canvas.save();
+
+    canvas.translate(2, 3);
+
+    _drawCloudShape(canvas, size, shadowPaint);
+
+    canvas.restore();
+
+    _drawCloudShape(canvas, size, paint);
+
+    final highlightPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.4)
+      ..style = PaintingStyle.fill;
+
+    canvas.save();
+
+    canvas.translate(-1, -1);
+
+    _drawCloudShape(canvas, size * 0.8, highlightPaint);
+
+    canvas.restore();
+  }
+
+  ///
+  void _drawCloudShape(Canvas canvas, Size size, Paint paint) {
+    final path = Path();
+
+    final baseY = size.height * 0.7;
+
+    final width = size.width;
+
+    final height = size.height;
+
+    path.moveTo(width * 0.1, baseY);
+
+    path.cubicTo(width * 0.05, baseY, width * 0.02, baseY - height * 0.1, width * 0.08, baseY - height * 0.15);
+
+    path.cubicTo(
+      width * 0.12,
+      baseY - height * 0.3,
+      width * 0.18,
+      baseY - height * 0.45,
+      width * 0.28,
+      baseY - height * 0.4,
+    );
+
+    path.cubicTo(
+      width * 0.25,
+      baseY - height * 0.55,
+      width * 0.35,
+      baseY - height * 0.65,
+      width * 0.45,
+      baseY - height * 0.55,
+    );
+
+    path.cubicTo(
+      width * 0.48,
+      baseY - height * 0.7,
+      width * 0.58,
+      baseY - height * 0.75,
+      width * 0.68,
+      baseY - height * 0.65,
+    );
+
+    path.cubicTo(
+      width * 0.75,
+      baseY - height * 0.7,
+      width * 0.85,
+      baseY - height * 0.6,
+      width * 0.88,
+      baseY - height * 0.45,
+    );
+
+    path.cubicTo(
+      width * 0.92,
+      baseY - height * 0.35,
+      width * 0.95,
+      baseY - height * 0.2,
+      width * 0.9,
+      baseY - height * 0.1,
+    );
+
+    path.cubicTo(width * 0.88, baseY, width * 0.8, baseY + height * 0.02, width * 0.7, baseY);
+
+    path.cubicTo(width * 0.5, baseY - height * 0.02, width * 0.3, baseY + height * 0.02, width * 0.1, baseY);
+
+    path.close();
+
+    canvas.drawPath(path, paint);
+
+    _drawSmallPuff(canvas, Offset(width * 0.15, baseY - height * 0.2), width * 0.08, paint);
+
+    _drawSmallPuff(canvas, Offset(width * 0.75, baseY - height * 0.25), width * 0.06, paint);
+
+    _drawSmallPuff(canvas, Offset(width * 0.55, baseY - height * 0.45), width * 0.05, paint);
+  }
+
+  ///
+  void _drawSmallPuff(Canvas canvas, Offset center, double radius, Paint paint) {
+    final puffPaint = Paint()
+      ..color = paint.color
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+
+    for (int i = 0; i < 8; i++) {
+      final angle = (i * 45) * math.pi / 180;
+
+      final variance = radius * (0.7 + math.sin(i * 2.3) * 0.3);
+
+      final x = center.dx + math.cos(angle) * variance;
+
+      final y = center.dy + math.sin(angle) * variance * 0.8;
+
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        final prevAngle = ((i = 1) * 45) * math.pi / 180;
+
+        final prevVariance = radius * (0.7 + math.sin((i - 1) * 2.3) * 0.3);
+
+        final prevX = center.dx + math.cos(prevAngle) * prevVariance;
+
+        final prevY = center.dy + math.sin(prevAngle) * prevVariance * 0.8;
+
+        final controlX = (prevX + x) / 2 + (math.sin(i) * radius * 0.1);
+
+        final controlY = (prevY + y) / 2 + (math.cos(i) * radius * 0.1);
+
+        path.quadraticBezierTo(controlX, controlY, x, y);
+      }
+    }
+
+    path.close();
+
+    canvas.drawPath(path, puffPaint);
+  }
+
+  ///
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
