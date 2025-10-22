@@ -388,6 +388,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         );
                                       },
                                     ),
+
+                                    AnimatedBuilder(
+                                      animation: _cloudAnimation,
+                                      builder: (context, child) {
+                                        return Transform.translate(
+                                          offset: Offset(_cloudAnimation.value * 0.2, 15),
+
+                                          child: Transform.scale(
+                                            scale: 0.8,
+
+                                            child: CustomPaint(painter: CloudPainter(), size: Size(100, 55)),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ],
                                 ),
                               );
@@ -565,7 +580,7 @@ class CloudPainter extends CustomPainter {
       if (i == 0) {
         path.moveTo(x, y);
       } else {
-        final prevAngle = ((i = 1) * 45) * math.pi / 180;
+        final prevAngle = ((i - 1) * 45) * math.pi / 180;
 
         final prevVariance = radius * (0.7 + math.sin((i - 1) * 2.3) * 0.3);
 
