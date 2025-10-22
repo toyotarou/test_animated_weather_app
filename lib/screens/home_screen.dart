@@ -408,6 +408,98 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               );
                             },
                           ),
+
+                          SizedBox(height: 25),
+
+                          AnimatedBuilder(
+                            animation: _pulseAnimation,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: _pulseAnimation.value,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '24',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 95,
+                                        fontWeight: FontWeight.bold,
+                                        height: 0.9,
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Text(
+                                        '°',
+
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 70,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+
+                          SizedBox(height: 15),
+
+                          AnimatedBuilder(
+                            animation: _breathAnimation,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: _breathAnimation.value,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
+                                  ),
+
+                                  child: Text(
+                                    'Partly Cloudy',
+
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+
+                          SizedBox(height: 20),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildTempItem("H: 26°", Colors.redAccent.withValues(alpha: 0.7)),
+
+                              Container(
+                                width: 2,
+                                height: 20,
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.4),
+                                  borderRadius: BorderRadius.circular(1),
+                                ),
+                              ),
+
+                              _buildTempItem("L: 18°", Colors.blueAccent.withValues(alpha: 0.7)),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -418,6 +510,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         );
       },
+    );
+  }
+
+  ///
+  _buildTempItem(String temp, Color color) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(15)),
+
+      child: Text(
+        temp,
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }
