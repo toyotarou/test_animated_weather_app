@@ -254,10 +254,117 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   );
                 },
               ),
+
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(children: [_buildMainWeatherCard()]),
+                ),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  ///
+  Widget _buildMainWeatherCard() {
+    return AnimatedBuilder(
+      animation: _slideAnimation2,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, _slideAnimation2.value),
+
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: AnimatedBuilder(
+              animation: _scaleAnimation,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _scaleAnimation.value,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 25),
+                    padding: EdgeInsets.all(35),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withValues(alpha: 0.35),
+                          Colors.white.withValues(alpha: 0.15),
+                          Colors.white.withValues(alpha: 0.05),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 30,
+                          offset: Offset(0, 15),
+                          spreadRadius: -5,
+                        ),
+
+                        BoxShadow(
+                          color: Colors.white.withValues(alpha: 0.1),
+                          blurRadius: 20,
+                          offset: Offset(0, -10),
+                          spreadRadius: -10,
+                        ),
+                      ],
+                    ),
+
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: Column(
+                        children: [
+                          AnimatedBuilder(
+                            animation: _waveAnimation,
+                            builder: (context, child) {
+                              return SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    AnimatedBuilder(
+                                      animation: _breathAnimation,
+                                      builder: (context, child) {
+                                        return Transform.scale(
+                                          scale: _breathAnimation.value,
+                                          child: Container(
+                                            width: 100,
+                                            height: 100,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+
+                                              gradient: RadialGradient(
+                                                colors: [
+                                                  Colors.yellowAccent.withValues(alpha: 0.3),
+                                                  Colors.transparent,
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }
