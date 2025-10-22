@@ -258,7 +258,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Expanded(
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
-                  child: Column(children: [_buildMainWeatherCard()]),
+                  child: Column(
+                    children: [
+                      _buildMainWeatherCard(),
+                      SizedBox(height: 25),
+                      _buildWeatherDetails(),
+                      SizedBox(height: 25),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -523,6 +530,84 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         temp,
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
+    );
+  }
+
+  ///
+  Widget _buildWeatherDetails() {
+    return AnimatedBuilder(
+      animation: _slideAnimation2,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, _slideAnimation2.value),
+
+          child: FadeTransition(
+            opacity: _fadeDelayedAnimation,
+
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 25),
+              padding: EdgeInsets.all(25),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.white.withValues(alpha: 0.25), Colors.white.withValues(alpha: 0.1)],
+                ),
+                borderRadius: BorderRadius.circular(25),
+
+                border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: Offset(0, 10)),
+                ],
+              ),
+
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildDetailItem(Icons.visibility_outlined, 'Visibility', '10 Km', Colors.blueAccent),
+                  _buildDetailItem(Icons.water_drop_outlined, 'Humidity', '65%', Colors.cyan),
+                  _buildDetailItem(Icons.air, 'Wind', '12 Km/h', Colors.green),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  ///
+  _buildDetailItem(IconData icon, String lavel, String value, Color accentColor) {
+    return AnimatedBuilder(
+      animation: _breathAnimation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _breathAnimation.value,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [accentColor.withValues(alpha: 0.3), accentColor.withValues(alpha: 0.1)],
+                  ),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: accentColor.withValues(alpha: 0.4), width: 1),
+                ),
+                child: Icon(icon, color: Colors.white, size: 20),
+              ),
+              SizedBox(height: 12),
+              Text(
+                value,
+                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+
+              SizedBox(height: 4),
+
+              Text(lavel, style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 13)),
+            ],
+          ),
+        );
+      },
     );
   }
 }
