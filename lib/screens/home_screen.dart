@@ -264,6 +264,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       SizedBox(height: 25),
                       _buildWeatherDetails(),
                       SizedBox(height: 25),
+
+                      _buildHourlyForecast(),
+                      SizedBox(height: 30),
                     ],
                   ),
                 ),
@@ -605,6 +608,122 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
               Text(lavel, style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 13)),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  ///
+  Widget _buildHourlyForecast() {
+    return AnimatedBuilder(
+      animation: _slideAnimation3,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, _slideAnimation3.value),
+
+          child: FadeTransition(
+            opacity: _fadeDelayedAnimation,
+
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 25),
+
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 5, bottom: 20),
+                    child: Text(
+                      '24-Hour Forecast',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                  ),
+
+                  Container(
+                    height: 140,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: 12,
+
+                      itemBuilder: (context, index) {
+                        return _buildHourlyItem(index);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  ///
+  _buildHourlyItem(int index) {
+    final hours = ['Now', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'];
+
+    final temps = List.generate(12, (index) => 'good');
+
+    final icons = List.generate(12, (index) => Icon(Icons.ac_unit, color: Colors.white, size: 24));
+
+    final colors = List.generate(12, (index) => Colors.redAccent);
+
+    return AnimatedBuilder(
+      animation: _breathAnimation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: (index == 0) ? _breathAnimation.value : 1,
+
+          child: Container(
+            width: 75,
+            margin: EdgeInsets.all(5),
+            padding: EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: (index == 0)
+                    ? [Colors.white.withValues(alpha: 0.4), Colors.white.withValues(alpha: 0.2)]
+                    : [Colors.white.withValues(alpha: 0.2), Colors.white.withValues(alpha: 0.1)],
+              ),
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(
+                color: (index == 0) ? Colors.white.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.25),
+                width: 1.5,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  hours[index % hours.length],
+
+                  style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+
+                Container(
+                  padding: EdgeInsets.all(8),
+
+                  decoration: BoxDecoration(
+                    color: colors[index % colors.length].withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+
+                  child: icons[index % icons.length],
+                ),
+
+                Text(
+                  temps[index % temps.length],
+
+                  style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         );
       },
